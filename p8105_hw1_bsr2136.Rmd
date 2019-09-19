@@ -61,4 +61,37 @@ plot_df <- tibble(
   numxy = as.numeric(logxy),
   facxy = as.factor(logxy)
 )
+
+# The number of rows in the dataset are
+nrow(plot_df)
+# The number of columns in the dataset are
+ncol(plot_df)
+# The mean of x is
+mean(pull(plot_df,x))
+# The median of x is
+median(pull(plot_df,x))
+# The standard deviation of x is
+sd(pull(plot_df,x))
+# The proportion of cases where x + y > 1 is
+sum(pull(plot_df,logxy))/500
+```
+
+
+### Problem 2.2 Making Scatterplots
+
+``` {r Problem 2.2} 
+
+sc_plot1 <- plot_df %>%
+  ggplot(aes(y,x,color = logxy)) + geom_point()
+#The colors shown are red and blue and they represent the values FALSE and TRUE, respectively.
+
+sc_plot2 <- plot_df %>%
+  ggplot(aes(y,x,color = numxy)) + geom_point()
+# The legend for the color scale in the above plot is continuous, from dark blue to light blue (0 to 1), but still displays in the points as binary, because the values are either 0 or 1
+
+sc_plot3 <- plot_df %>%
+  ggplot(aes(y,x,color = facxy)) + geom_point()
+# The colors and legend in this plot appear identical to plot1 with the logical vector being used as color
+
+ggsave('xy_scatterplot.png',plot = sc_plot1)
 ```
