@@ -15,20 +15,17 @@ library(tidyverse)
 
 ```{r Problem 1.1}
 
-df <- tibble(
+vec_df <- tibble(
 normal_sample_vec = rnorm(8),
 logic_vec = normal_sample_vec > 0,
 char_vec = c('a','b','c','d','e','f','g','h'),
 factor_vec = as.factor(c('H','M','L','H','M','L','H','M'))
 )
 
-attach(df)
-mean(normal_sample_vec)
-mean(logic_vec)
-mean(char_vec)
-mean(factor_vec)
-detach(df)
-
+mean(pull(vec_df,normal_sample_vec))
+mean(pull(vec_df,logic_vec))
+mean(pull(vec_df,char_vec))
+mean(pull(vec_df,factor_vec))
 ```
 
 I can take the mean of the numeric and logical vectors, and the result returned is a numeric. Trying to take the mean of the character and factor vectors returns NA, and gives me the warning that the argument is not numeric and logical.
@@ -36,11 +33,9 @@ I can take the mean of the numeric and logical vectors, and the result returned 
 ### Problem 1.2 - converting logic,char, and factor vectors using as.numeric
 
 ```{r Problem 1.2, results=FALSE}
-attach(df)
-as.numeric(logic_vec)
-as.numeric(char_vec)
-as.numeric(factor_vec)
-detach(df)
+as.numeric(pull(vec_df,logic_vec))
+as.numeric(pull(vec_df,char_vec))
+as.numeric(pull(vec_df,factor_vec))
 ```
 
 The logical and factor vectors were able to be converted to numeric, with the logical vector taking the values 0 and 1, and the factor vector taking the values 1,2, and 3 (the number of levels). The character vector returned a numeric vector of all NAs and returned the warning "NAs introduced by coercion". This clearly explains what the mean of the logic vector was, and why the character vector mean was NA. The factor vector changed significantly when converted to numeric, which explains why the mean returned NA originally.
@@ -48,11 +43,22 @@ The logical and factor vectors were able to be converted to numeric, with the lo
 ### Problem 1.3 - Convert and Multiply
 
 ```{r Problem 1.3}
-attach(df)
-as.numeric(logic_vec) * normal_sample_vec
-as.factor(logic_vec) * normal_sample_vec
-as.numeric(as.factor(logic_vec)) * normal_sample_vec
-detach(df)
+as.numeric(pull(vec_df,logic_vec)) * pull(vec_df,normal_sample_vec)
+as.factor(pull(vec_df,logic_vec)) * pull(vec_df,normal_sample_vec)
+as.numeric(as.factor(pull(vec_df,logic_vec))) * pull(vec_df,normal_sample_vec)
 ```
 
 
+## Problem 2 - Inline R Coding and plotting
+
+### Problem 2.1 - Tibble with inline code
+
+``` {r Problem 2.1}
+plot_df <- tibble(
+  x = rnorm(500),
+  y = rnorm(500),
+  logxy = x + y > 1,
+  numxy = as.numeric(logxy),
+  facxy = as.factor(logxy)
+)
+```
