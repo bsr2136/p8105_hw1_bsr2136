@@ -11,7 +11,16 @@ library(tidyverse)
 ```
 
 ## Problem 1 - Variable Types
+
 ### Problem 1.1 - Data Frame, Vectors, and Means
+First I will create a data frame with 4 variables that are:
+
+1. A random sample of 8 values from the standard normal
+2. A logical vector indicating whether those values from the previous variable are above 0
+3. A character vector of length 8 with 8 different letters
+4. A factor vector of length 8 with 3 factor levels, H, M, and L
+
+Then I will attempt to take the means of each variable.
 
 ```{r Problem 1.1}
 
@@ -28,9 +37,10 @@ mean(pull(vec_df,char_vec))
 mean(pull(vec_df,factor_vec))
 ```
 
-I can take the mean of the numeric and logical vectors, and the result returned is a numeric. Trying to take the mean of the character and factor vectors returns NA, and gives me the warning that the argument is not numeric and logical.
+I can take the mean of the numeric and logical vectors, and the result returned is a numeric. Trying to take the mean of the character and factor vectors returns NA, and gives me the warning that the argument is not numeric or logical.
 
-### Problem 1.2 - converting logic,char, and factor vectors using as.numeric
+### Problem 1.2 - Converting Variables
+I will try to convert the three non-numeric vectors to numeric, and see what the results are.
 
 ```{r Problem 1.2, results=FALSE}
 as.numeric(pull(vec_df,logic_vec))
@@ -38,9 +48,16 @@ as.numeric(pull(vec_df,char_vec))
 as.numeric(pull(vec_df,factor_vec))
 ```
 
-The logical and factor vectors were able to be converted to numeric, with the logical vector taking the values 0 and 1, and the factor vector taking the values 1,2, and 3 (the number of levels). The character vector returned a numeric vector of all NAs and returned the warning "NAs introduced by coercion". This clearly explains what the mean of the logic vector was, and why the character vector mean was NA. The factor vector changed significantly when converted to numeric, which explains why the mean returned NA originally.
+The logical and factor vectors were able to be converted to numeric, with the logical vector taking the values 0 and 1, and the factor vector taking the values 1,2, and 3 (the number of levels). The character vector returned a numeric vector of all NAs and returned the warning "NAs introduced by coercion". This clearly explains what the mean of the logical vector was, and why the character vector mean was NA. The factor vector changed significantly when converted to numeric, which helps explain why the mean returned NA originally.
 
-### Problem 1.3 - Convert and Multiply
+### Problem 1.3 - Convert Variables and Multiply
+I will convert the logical vector to:
+
+1. numeric 
+2. factor
+3. factor, then convert again to numeric
+
+and multiply each of those by the vector of random samples from the standard normal.
 
 ```{r Problem 1.3}
 as.numeric(pull(vec_df,logic_vec)) * pull(vec_df,normal_sample_vec)
@@ -51,7 +68,16 @@ as.numeric(as.factor(pull(vec_df,logic_vec))) * pull(vec_df,normal_sample_vec)
 
 ## Problem 2 - Inline R Coding and plotting
 
-### Problem 2.1 - Tibble with inline code
+### Problem 2.1 - Tibble with Inline Code
+I will create a data frame with 5 variables:
+
+1. A random sample of size 500 from the standard normal
+2. Another random sample of size 500 from the standard normal
+3. A logical vector indicating whether the value from the 1st variable plus the value from the 2nd is greater than 1
+4. Variable 3 converted to numeric
+5. Variable 3 converted to factor. 
+
+And then I will describe the dataframe with inline code comments
 
 ``` {r Problem 2.1}
 plot_df <- tibble(
@@ -78,20 +104,27 @@ sum(pull(plot_df,logxy))/500
 
 
 ### Problem 2.2 Making Scatterplots
+I will now make a scatterplot of y vs x (the 2 random samples), and will color the points by the logical vector indicating whether x+y>1. I will then make 2 more plots in which I color the points using the 4th and 5th variables in the datafame, where the logical vector was converted to numeric and factor, respectively.
 
 ``` {r Problem 2.2} 
-
-sc_plot1 <- plot_df %>%
+sc_plot_log <- plot_df %>%
   ggplot(aes(y,x,color = logxy)) + geom_point()
-#The colors shown are red and blue and they represent the values FALSE and TRUE, respectively.
+sc_plot_log
+# The colors shown are red and blue and they represent the values 
+# FALSE and TRUE, respectively.
 
-sc_plot2 <- plot_df %>%
+sc_plot_num <- plot_df %>%
   ggplot(aes(y,x,color = numxy)) + geom_point()
-# The legend for the color scale in the above plot is continuous, from dark blue to light blue (0 to 1), but still displays in the points as binary, because the values are either 0 or 1
+sc_plot_num
+# The legend for the color scale in the above plot is continuous, from dark blue
+# to light blue (0 to 1), but still displays in the plot as binary, because the
+# values are either 0 or 1
 
-sc_plot3 <- plot_df %>%
+sc_plot_fac <- plot_df %>%
   ggplot(aes(y,x,color = facxy)) + geom_point()
-# The colors and legend in this plot appear identical to plot1 with the logical vector being used as color
+sc_plot_fac
+# The colors and legend in this plot appear identical to plot1 where the 
+# logical vector was being used as color
 
-ggsave('xy_scatterplot.png',plot = sc_plot1)
+ggsave('xy_scatterplot.png',plot = sc_plot_log)
 ```
